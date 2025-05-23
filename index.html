@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Web App Cámara</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    video {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Abre tu cámara</h1>
+  <button onclick="abrirCamara()">Abrir cámara</button>
+  <video id="video" autoplay playsinline></video>
+
+  <script>
+    function abrirCamara() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          const video = document.getElementById('video');
+          video.srcObject = stream;
+        })
+        .catch(error => {
+          alert("No se pudo acceder a la cámara: " + error.message);
+        });
+    }
+  </script>
+</body>
+</html>
+
