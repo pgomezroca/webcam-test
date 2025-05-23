@@ -108,10 +108,33 @@
     }
 
     function guardarFoto() {
-      const link = document.createElement('a');
-      link.href = dataURL;
-      link.download = 'foto_' + new Date().toISOString().replace(/[:.]/g, '-') + '.png';
-      link.click();
+      if (!dataURL) return;
+
+// Convertimos el canvas a JPEG base64
+const jpegDataURL = canvas.toDataURL('image/jpeg', 0.92); // mejor compresión que PNG
+
+// Metadatos EXIF que querés agregar
+const exifObj = {
+  "0th": {
+    [piexif.ImageIFD.Make]: "MiApp",
+    [piexif.ImageIFD.Artist]: "Tu Nombre",
+    [piexif.ImageIFD.ImageDescription]: "Foto tomada con mi app"
+  },
+  "Exif": {
+    [piexif.ExifIFD.DateTimeOriginal]: new Date().toISOString().slice(0, 19).replace(/:/g, ':'),
+  }
+};
+
+const exifBytes = piexif.dump(exifObj);
+const newDataURL = piexif.insert(exifBytes, jpegDataURL);
+
+// Crear link de descarga
+const link = document.createElement('a');
+link.href = newDataURL;
+link.download = 'foto_' + new Date().toISOString().replace(/[:.]/g, '-') + '.jpg';
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
     }
 
     function repetirFoto() {
@@ -121,5 +144,7 @@
       document.getElementById('controles').style.display = "none";
     }
   </script>
+  <script src="https://unpkg.com/piexifjs"></script>
+
 </body>
 </html>
