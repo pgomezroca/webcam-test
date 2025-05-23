@@ -44,6 +44,13 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    #formulario select {
+  padding: 10px;
+  font-size: 18px;
+  width: 80%;
+  border-radius: 5px;
+  border: none;
+}
 
     #video, #foto {
       position: absolute;
@@ -99,7 +106,14 @@
   <!-- Formulario -->
   <div id="formulario">
     <input type="text" id="dni" placeholder="DNI del paciente" required />
-    <input type="text" id="diagnostico" placeholder="Diagnóstico" required />
+    <select id="diagnostico" required>
+      <option value="" disabled selected>Seleccionar diagnóstico</option>
+      <option value="fractura_muneca">Fractura de muñeca</option>
+      <option value="luxacion_hombro">Luxación de hombro</option>
+      <option value="esguince_tobillo">Esguince de tobillo</option>
+      <option value="hernia_disco">Hernia de disco</option>
+      <option value="otros">Otros</option>
+    </select>
     <button onclick="iniciarCamara()">Continuar</button>
   </div>
 
