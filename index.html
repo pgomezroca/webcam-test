@@ -2,44 +2,132 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Web App Cámara</title>
+  <title>Cámara Web App</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 50px;
+      padding: 20px;
+      background-color: #f7f7f7;
     }
-    video {
-      margin-top: 20px;
+    video, canvas, img {
       width: 100%;
-      max-width: 500px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
+      max-width: 400px;
+      margin-top: 20px;
+      border: 3px solid #ddd;
+      border-radius: 12px;
     }
     button {
-      padding: 10px 20px;
+      display: block;
+      width: 90%;
+      max-width: 400px;
+      margin: 10px auto;
+      padding: 15px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    a {
+      display: block;
+      margin-top: 10px;
       font-size: 16px;
-      margin-top: 20px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    #status {
+      margin-top: 10px;
+      font-weight: bold;
+      color: green;
     }
   </style>
 </head>
 <body>
-  <h1>Abre tu cámara</h1>
-  <button onclick="abrirCamara()">Abrir cámara</button>
+  <h1>Cámara Web App</h1>
+
+  <button onclick="abrirCamara()">📷 Abrir cámara</button>
   <video id="video" autoplay playsinline></video>
 
+  <button onclick="sacarFoto()">📸 Sacar Foto</button>
+  <a id="descargarFoto" download>⬇️ Descargar Foto</a>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <img id="foto" alt="Tu foto aparecerá aquí" />
+
+  <button onclick="empezarGrabacion()">🔴 Grabar Video</button>
+  <button onclick="detenerGrabacion()">⏹️ Detener Grabación</button>
+  <a id="descargarVideo" download>⬇️ Descargar Video</a>
+  <video id="videoGrabado" controls></video>
+
+  <div id="status"></div>
+
   <script>
+    let stream;
+    let recorder;
+    let chunks = [];
+
     function abrirCamara() {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          const video = document.getElementById('video');
-          video.srcObject = stream;
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(s => {
+          stream = s;
+          document.getElementById('video').srcObject = stream;
+          document.getElementById('status').innerText = "✅ Cámara activada";
         })
-        .catch(error => {
-          alert("No se pudo acceder a la cámara: " + error.message);
-        });
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function sacarFoto() {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const foto = document.getElementById('foto');
+      const link = document.getElementById('descargarFoto');
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+
+      const dataURL = canvas.toDataURL('image/png');
+      foto.src = dataURL;
+
+      const nombre = "foto_" + obtenerFechaHora() + ".png";
+      link.href = dataURL;
+      link.download = nombre;
+      document.getElementById('status').innerText = "📸 Foto tomada";
+    }
+
+    function empezarGrabacion() {
+      chunks = [];
+      recorder = new MediaRecorder(stream);
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const videoGrabado = document.getElementById('videoGrabado');
+        const link = document.getElementById('descargarVideo');
+        const nombre = "video_" + obtenerFechaHora() + ".webm";
+
+        videoGrabado.src = url;
+        link.href = url;
+        link.download = nombre;
+        document.getElementById('status').innerText = "🎥 Video grabado";
+      };
+      recorder.start();
+      document.getElementById('status').innerText = "🔴 Grabando video...";
+    }
+
+    function detenerGrabacion() {
+      if (recorder && recorder.state === "recording") {
+        recorder.stop();
+      }
+    }
+
+    function obtenerFechaHora() {
+      const now = new Date();
+      return now.toISOString().replace(/[:.]/g, "-").slice(0, 19);
     }
   </script>
 </body>
 </html>
-
