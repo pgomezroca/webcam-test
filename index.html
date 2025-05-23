@@ -3,130 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <title>Cámara Web App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 20px;
-      background-color: #f7f7f7;
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      height: 100%;
+      overflow: hidden;
     }
-    video, canvas, img {
+    #video, #foto {
+      position: absolute;
+      top: 0; left: 0;
       width: 100%;
-      max-width: 400px;
-      margin-top: 20px;
-      border: 3px solid #ddd;
-      border-radius: 12px;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
     }
-    button {
-      display: block;
-      width: 90%;
-      max-width: 400px;
-      margin: 10px auto;
-      padding: 15px;
-      font-size: 18px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
+    #botonFoto {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 80px;
+      background: red;
+      border: 5px solid white;
+      border-radius: 50%;
+      z-index: 2;
+      cursor: pointer;
     }
-    button:hover {
-      background-color: #0056b3;
+    #controles {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      z-index: 2;
     }
-    a {
-      display: block;
-      margin-top: 10px;
+    .botonControl {
+      padding: 10px 20px;
       font-size: 16px;
-      color: #007bff;
-      text-decoration: none;
+      border-radius: 8px;
+      border: none;
+      background: white;
+      color: black;
+      cursor: pointer;
     }
-    #status {
-      margin-top: 10px;
-      font-weight: bold;
-      color: green;
+    #canvas {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>Cámara Web App</h1>
-
-  <button onclick="abrirCamara()">📷 Abrir cámara</button>
   <video id="video" autoplay playsinline></video>
+  <img id="foto" style="display:none;" />
+  <canvas id="canvas"></canvas>
 
-  <button onclick="sacarFoto()">📸 Sacar Foto</button>
-  <a id="descargarFoto" download>⬇️ Descargar Foto</a>
-  <canvas id="canvas" style="display:none;"></canvas>
-  <img id="foto" alt="Tu foto aparecerá aquí" />
+  <!-- Botón de captura -->
+  <button id="botonFoto" onclick="sacarFoto()"></button>
 
-  <button onclick="empezarGrabacion()">🔴 Grabar Video</button>
-  <button onclick="detenerGrabacion()">⏹️ Detener Grabación</button>
-  <a id="descargarVideo" download>⬇️ Descargar Video</a>
-  <video id="videoGrabado" controls></video>
-
-  <div id="status"></div>
+  <!-- Controles luego de la foto -->
+  <div id="controles" style="display:none;">
+    <button class="botonControl" onclick="guardarFoto()">📥 Guardar</button>
+    <button class="botonControl" onclick="repetirFoto()">🔄 Volver a tomar</button>
+  </div>
 
   <script>
     let stream;
-    let recorder;
-    let chunks = [];
+    let dataURL = "";
 
-    function abrirCamara() {
-      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        .then(s => {
-          stream = s;
-          document.getElementById('video').srcObject = stream;
-          document.getElementById('status').innerText = "✅ Cámara activada";
-        })
-        .catch(err => alert("Error: " + err.message));
-    }
+    // Abrir cámara al cargar
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: "environment",
+        width: { ideal: 1920 },
+        height: { ideal: 1080 }
+      }
+    })
+    .then(s => {
+      stream = s;
+      document.getElementById('video').srcObject = stream;
+    })
+    .catch(err => alert("Error al acceder a la cámara: " + err.message));
 
     function sacarFoto() {
       const video = document.getElementById('video');
       const canvas = document.getElementById('canvas');
       const foto = document.getElementById('foto');
-      const link = document.getElementById('descargarFoto');
 
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
 
-      const dataURL = canvas.toDataURL('image/png');
+      dataURL = canvas.toDataURL('image/png');
       foto.src = dataURL;
 
-      const nombre = "foto_" + obtenerFechaHora() + ".png";
+      // Mostrar la imagen y controles, ocultar cámara
+      foto.style.display = "block";
+      video.style.display = "none";
+      document.getElementById('botonFoto').style.display = "none";
+      document.getElementById('controles').style.display = "flex";
+    }
+
+    function guardarFoto() {
+      const link = document.createElement('a');
       link.href = dataURL;
-      link.download = nombre;
-      document.getElementById('status').innerText = "📸 Foto tomada";
+      link.download = 'foto_' + new Date().toISOString().replace(/[:.]/g, '-') + '.png';
+      link.click();
     }
 
-    function empezarGrabacion() {
-      chunks = [];
-      recorder = new MediaRecorder(stream);
-      recorder.ondataavailable = e => chunks.push(e.data);
-      recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/webm' });
-        const url = URL.createObjectURL(blob);
-        const videoGrabado = document.getElementById('videoGrabado');
-        const link = document.getElementById('descargarVideo');
-        const nombre = "video_" + obtenerFechaHora() + ".webm";
-
-        videoGrabado.src = url;
-        link.href = url;
-        link.download = nombre;
-        document.getElementById('status').innerText = "🎥 Video grabado";
-      };
-      recorder.start();
-      document.getElementById('status').innerText = "🔴 Grabando video...";
-    }
-
-    function detenerGrabacion() {
-      if (recorder && recorder.state === "recording") {
-        recorder.stop();
-      }
-    }
-
-    function obtenerFechaHora() {
-      const now = new Date();
-      return now.toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    function repetirFoto() {
+      document.getElementById('foto').style.display = "none";
+      document.getElementById('video').style.display = "block";
+      document.getElementById('botonFoto').style.display = "block";
+      document.getElementById('controles').style.display = "none";
     }
   </script>
 </body>
