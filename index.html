@@ -97,13 +97,64 @@
     .botonControl:hover {
       background: rgba(255, 255, 255, 0.3);
     }
+    #pantallaBienvenida {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #111;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px;
+  z-index: 4;
+}
+
+#pantallaBienvenida h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+#pantallaBienvenida p {
+  font-size: 1.2em;
+  color: #aaa;
+  margin-bottom: 40px;
+  max-width: 80%;
+}
+
+#pantallaBienvenida button {
+  padding: 15px 40px;
+  font-size: 18px;
+  background: transparent;
+  border: 2px solid #4fd1c5;
+  color: #4fd1c5;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#pantallaBienvenida button:hover {
+  background: #4fd1c5;
+  color: black;
+}
+
 
     #canvas { display: none; }
+
   </style>
 </head>
 <body>
+<!-- Pantalla de bienvenida -->
+<div id="pantallaBienvenida">
+  <h1>Bienvenidos a <span style="color:#4fd1c5">Med-Viewer</span></h1>
+  <p>Capturá, organizá y almacená tus imágenes clínicas de forma simple y segura.</p>
+  <button onclick="entrarAplicacion()">Entrar</button>
+</div>
 
   <!-- Formulario -->
+
   <div id="formulario">
     <input type="text" id="dni" placeholder="DNI del paciente" required />
     <select id="diagnostico" required>
@@ -133,6 +184,11 @@
 
   <script src="https://unpkg.com/piexifjs"></script>
   <script>
+    function entrarAplicacion() {
+  document.getElementById('pantallaBienvenida').style.display = 'none';
+  document.getElementById('formulario').style.display = 'flex';
+}
+
     let stream, dataURL, dni = "", diagnostico = "";
 
     function iniciarCamara() {
