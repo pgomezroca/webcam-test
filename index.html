@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
-      margin: 0; padding: 0;
+      margin: 0; 
+      padding: 0;
       background: black;
       height: 100%;
       overflow: hidden;
@@ -183,6 +184,40 @@
 
   <div id="formulario">
     <input type="text" id="dni" placeholder="DNI del paciente" required />
+    <select id="regionAnatomica" required>
+      <option value="" disabled selected>Seleccioná región anatómica</option>
+      <option value="cabeza">Cabeza</option>
+      <option value="cuello">Cuello</option>
+      <option value="torax">Tórax</option>
+      <option value="abdomen">Abdomen</option>
+      <option value="pelvis">Pelvis</option>
+      <option value="miembro_superior">Miembro superior</option>
+      <option value="miembro_inferior">Miembro inferior</option>
+    </select>
+    <!-- Sub-selects por región -->
+<select id="subregion-cuello" class="subregion" style="display:none;">
+  <option value="" disabled selected>Seleccioná diagnosticos de cuello</option>
+  <option value="cuello-a">Cuello A</option>
+  <option value="cuello-b">Cuello B</option>
+</select>
+
+<select id="subregion-hombro" class="subregion" style="display:none;">
+  <option value="" disabled selected>Seleccioná diagnosticos de hombro</option>
+  <option value="hombro-a">Hombro A</option>
+  <option value="hombro-b">Hombro B</option>
+</select>
+
+<select id="subregion-humero" class="subregion" style="display:none;">
+  <option value="" disabled selected>Seleccioná diagnosticos de húmero</option>
+  <option value="humero-a">Húmero A</option>
+  <option value="humero-b">Húmero B</option>
+</select>
+
+<select id="subregion-codo" class="subregion" style="display:none;">
+  <option value="" disabled selected>Seleccioná diagnosticos de codo</option>
+  <option value="codo-a">Codo A</option>
+  <option value="codo-b">Codo B</option>
+</select>
     <select id="diagnostico" required>
       <option value="" disabled selected>Seleccionar diagnóstico</option>
       <option value="fractura_muneca">Fractura de muñeca</option>
@@ -216,6 +251,13 @@
 }
 
     let stream, dataURL, dni = "", diagnostico = "";
+    function mostrarSubregion() {
+    const todas = document.querySelectorAll('.subregion');
+    todas.forEach(sel => sel.style.display = 'none');
+    const regionSeleccionada = document.getElementById('regionAnatomica').value;
+    const subSelect = document.getElementById('subregion-' + regionSeleccionada);
+    if (subSelect) subSelect.style.display = 'block';
+  }
 
     function iniciarCamara() {
       dni = document.getElementById('dni').value.trim();
