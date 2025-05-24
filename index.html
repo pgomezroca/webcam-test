@@ -160,16 +160,12 @@
   background: #4fd1c5;
   color: black;
 }
-
-
-
-    #canvas { display: none; }
-
-  </style>
+ #canvas { display: none; } 
+ </style>
 </head>
 <body>
 <!-- Pantalla de bienvenida -->
-<div id="pantallaBienvenida">
+ <div id="pantallaBienvenida">
   <h1 class="tituloBienvenida">
     <span class="linea1">Bienvenidos</span><br>
     <span class="linea2">a</span><br>
@@ -184,8 +180,7 @@
 
   <div id="formulario">
     <input type="text" id="dni" placeholder="DNI del paciente" required />
-      
-    </select>
+    
     <select id="regionAnatomica" onchange="mostrarSubregion()" required>
       <option value="" disabled selected>Seleccioná región anatómica</option>
       <option value="cuello">Cuello</option>
@@ -219,9 +214,6 @@
       <option value="codo-a">Codo A</option>
       <option value="codo-b">Codo B</option>
     </select>
-
-    <button onclick="iniciarCamara()">Continuar</button>
-  </div>
     <button onclick="iniciarCamara()">Continuar</button>
   </div>
 
@@ -237,8 +229,27 @@
   <div id="controles" style="display:none;">
     <button class="botonControl" onclick="guardarFoto()">Guardar</button>
     <button class="botonControl" onclick="repetirFoto()">Volver a tomar</button>
+    <button class="botonControl" onclick="mostrarDespedida()">Finalizar</button>
   </div>
+    <!-- Pantalla de despedida -->
+    <div id="pantallaDespedida" style="display:none;
+     position:absolute;
+      top:0; left:0;
+    width:100vw; height:100vh; background:#111; color:white;
+     flex-direction:column; justify-content:center;
+    align-items:center; text-align:center; padding:30px;
+    box-sizing:border-box; z-index:6;">
+   <h2>¡Gracias por usar Med-Photo!</h2>
+    <p>Lee nuestros
+      <a href="/terms.html" target="_blank" style="color:#4fd1c5; text-decoration:underline;">
+        Términos &amp; Condiciones
+      </a>
+    </p>
+   <p>Cuando quieras salir, cierra la pestaña de tu navegador.</p>
+ 
+</div>
 
+  
   <script src="https://unpkg.com/piexifjs"></script>
   <script>
     let stream, dataURL;
@@ -277,7 +288,6 @@ function mostrarSubregion() {
   region     = regionSel;
   diagnostico = diag;
      
-      
       document.getElementById('formulario').style.display = 'none';
 
       navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
@@ -343,6 +353,20 @@ function mostrarSubregion() {
       document.getElementById('botonFoto').style.display = "block";
       document.getElementById('controles').style.display = "none";
     }
+    function mostrarDespedida() {
+  // 1) Detén la cámara si está activa
+  if (stream) stream.getTracks().forEach(t => t.stop());
+
+  // 2) Oculta todas las pantallas y elementos
+  ['formulario','pantallaInicial','pantallaUpload','pantallaBienvenida',
+   'video','foto','controles'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  // 3) Muestra la despedida
+  document.getElementById('pantallaDespedida').style.display = 'flex';
+}
   </script>
 </body>
 </html>
