@@ -1,0 +1,156 @@
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: black;
+  color: white;
+}
+
+.pantalla {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 20px;
+  padding: 20px;
+}
+
+.visible {
+  display: flex !important;
+}
+
+input, select {
+  padding: 10px;
+  font-size: 18px;
+  width: 80%;
+  border: none;
+  border-bottom: 2px solid white;
+  background: transparent;
+  color: white;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 18px;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.botonControl {
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 2px solid white;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+}
+
+.diagnosticoSelect {
+  display: none;
+}
+
+video, #foto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 1;
+}
+
+#botonFoto {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  background: red;
+  border: 5px solid white;
+  border-radius: 50%;
+  z-index: 2;
+  cursor: pointer;
+}
+
+#controles {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  z-index: 2;
+}
+    #pantallaBienvenida {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #111;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px;
+  box-sizing: border-box;
+  z-index: 4;
+}
+
+.tituloBienvenida {
+  font-size: 2.5em;
+  line-height: 1em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.tituloBienvenida .linea1,
+.tituloBienvenida .linea2,
+.tituloBienvenida .linea3 {
+  display: block;
+}
+
+.tituloBienvenida .linea2 {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.tituloBienvenida .linea3 {
+  font-size: 120%;
+  color: #4fd1c5; 
+}
+
+
+#pantallaBienvenida p {
+  font-size: 1.1em;
+  color: #aaa;
+  margin-bottom: 40px;
+  max-width: 90%;
+}
+
+#pantallaBienvenida button {
+  padding: 15px 40px;
+  font-size: 18px;
+  background: transparent;
+  border: 2px solid #4fd1c5;
+  color: #4fd1c5;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#pantallaBienvenida button:hover {
+  background: #4fd1c5;
+  color: black;
+}
+.diagnosticoSelect {
+  display: none;
+}
+
+    #canvas { display: none; }

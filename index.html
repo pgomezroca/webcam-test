@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cámara Diagnóstico V3</title>
+  <title>Med Photo V3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
@@ -184,48 +184,44 @@
 
   <div id="formulario">
     <input type="text" id="dni" placeholder="DNI del paciente" required />
-    <select id="regionAnatomica" required>
+      
+    </select>
+    <select id="regionAnatomica" onchange="mostrarSubregion()" required>
       <option value="" disabled selected>Seleccioná región anatómica</option>
-      <option value="cabeza">Cabeza</option>
       <option value="cuello">Cuello</option>
-      <option value="torax">Tórax</option>
-      <option value="abdomen">Abdomen</option>
-      <option value="pelvis">Pelvis</option>
-      <option value="miembro_superior">Miembro superior</option>
-      <option value="miembro_inferior">Miembro inferior</option>
+      <option value="hombro">Hombro</option>
+      <option value="humero">Húmero</option>
+      <option value="codo">Codo</option>
+      <!-- agrega aquí más regiones si las vas a tener -->
     </select>
-    <!-- Sub-selects por región -->
-<select id="subregion-cuello" class="subregion" style="display:none;">
-  <option value="" disabled selected>Seleccioná diagnosticos de cuello</option>
-  <option value="cuello-a">Cuello A</option>
-  <option value="cuello-b">Cuello B</option>
-</select>
 
-<select id="subregion-hombro" class="subregion" style="display:none;">
-  <option value="" disabled selected>Seleccioná diagnosticos de hombro</option>
-  <option value="hombro-a">Hombro A</option>
-  <option value="hombro-b">Hombro B</option>
-</select>
-
-<select id="subregion-humero" class="subregion" style="display:none;">
-  <option value="" disabled selected>Seleccioná diagnosticos de húmero</option>
-  <option value="humero-a">Húmero A</option>
-  <option value="humero-b">Húmero B</option>
-</select>
-
-<select id="subregion-codo" class="subregion" style="display:none;">
-  <option value="" disabled selected>Seleccioná diagnosticos de codo</option>
-  <option value="codo-a">Codo A</option>
-  <option value="codo-b">Codo B</option>
-</select>
-    <select id="diagnostico" required>
-      <option value="" disabled selected>Seleccionar diagnóstico</option>
-      <option value="fractura_muneca">Fractura de muñeca</option>
-      <option value="luxacion_hombro">Luxación de hombro</option>
-      <option value="esguince_tobillo">Esguince de tobillo</option>
-      <option value="hernia_disco">Hernia de disco</option>
-      <option value="otros">Otros</option>
+    <!-- Sub-selects por región (cada option será un diagnóstico) -->
+    <select id="subregion-cuello"      class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de cuello</option>
+      <option value="cuello-a">Cuello A</option>
+      <option value="cuello-b">Cuello B</option>
     </select>
+
+    <select id="subregion-hombro"     class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de hombro</option>
+      <option value="hombro-a">Hombro A</option>
+      <option value="hombro-b">Hombro B</option>
+    </select>
+
+    <select id="subregion-humero"     class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de húmero</option>
+      <option value="humero-a">Húmero A</option>
+      <option value="humero-b">Húmero B</option>
+    </select>
+
+    <select id="subregion-codo"       class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de codo</option>
+      <option value="codo-a">Codo A</option>
+      <option value="codo-b">Codo B</option>
+    </select>
+
+    <button onclick="iniciarCamara()">Continuar</button>
+  </div>
     <button onclick="iniciarCamara()">Continuar</button>
   </div>
 
@@ -245,42 +241,55 @@
 
   <script src="https://unpkg.com/piexifjs"></script>
   <script>
+    let stream, dataURL;
+    let dni = "", region = "", diagnostico = "";
+
     function entrarAplicacion() {
   document.getElementById('pantallaBienvenida').style.display = 'none';
   document.getElementById('formulario').style.display = 'flex';
 }
+function mostrarSubregion() {
+      // Oculta todos los selects de subregión
+      document.querySelectorAll('.subregion')
+        .forEach(sel => sel.style.display = 'none');
 
-    let stream, dataURL, dni = "", diagnostico = "";
-    function mostrarSubregion() {
-    const todas = document.querySelectorAll('.subregion');
-    todas.forEach(sel => sel.style.display = 'none');
-    const regionSeleccionada = document.getElementById('regionAnatomica').value;
-    const subSelect = document.getElementById('subregion-' + regionSeleccionada);
-    if (subSelect) subSelect.style.display = 'block';
+      // Muestra el que corresponde
+      const region = document.getElementById('regionAnatomica').value;
+      const sub = document.getElementById('subregion-' + region);
+      if (sub) sub.style.display = 'block';
+    }
+   
+      function iniciarCamara() {
+      dni = document.getElementById('dni').value.trim();
+      // 2. Región
+  const regionSel = document.getElementById('regionAnatomica').value;
+  const sub = Array.from(document.querySelectorAll('.subregion'))
+    .find(s => s.style.display === 'block');
+  const diag = sub ? sub.value : "";
+
+  // 4. Validación
+  if (!dni || !regionSel || !diag) {
+    alert("Por favor, completá DNI, región anatómica y diagnóstico");
+    return;
   }
 
-    function iniciarCamara() {
-      dni = document.getElementById('dni').value.trim();
-      diagnostico = document.getElementById('diagnostico').value.trim().replace(/\s+/g, "_");
+  // 5. Asigno a las variables globales
+  region     = regionSel;
+  diagnostico = diag;
+     
+      
+      document.getElementById('formulario').style.display = 'none';
 
-      if (!dni || !diagnostico) {
-        alert("Por favor, completá DNI y diagnóstico");
-        return;
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        .then(s => {
+          stream = s;
+          const video = document.getElementById('video');
+          video.srcObject = stream;
+          video.style.display = "block";
+          document.getElementById('botonFoto').style.display = "block";
+        })
+        .catch(err => alert("Error al acceder a la cámara: " + err.message));
       }
-
-      document.getElementById('formulario').style.display = "none";
-
-      navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }
-      })
-      .then(s => {
-        stream = s;
-        document.getElementById('video').srcObject = stream;
-        document.getElementById('video').style.display = "block";
-        document.getElementById('botonFoto').style.display = "block";
-      })
-      .catch(err => alert("Error al acceder a la cámara: " + err.message));
-    }
 
     function sacarFoto() {
       const video = document.getElementById('video');
@@ -304,7 +313,7 @@
       if (!dataURL) return;
 
       const fecha = new Date().toISOString().replace(/[:.]/g, '-');
-      const nombreArchivo = `${dni}_${diagnostico}_${fecha}.jpg`;
+      const nombreArchivo =  `${dni}_${region}_${diagnostico}_${fecha}.jpg`;
 
       const exifObj = {
         "0th": {
