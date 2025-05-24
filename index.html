@@ -100,7 +100,7 @@
     #pantallaBienvenida {
   position: absolute;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100vw; height: 100vh;
   background: #111;
   color: white;
   display: flex;
@@ -109,19 +109,21 @@
   align-items: center;
   text-align: center;
   padding: 30px;
+  box-sizing: border-box;
   z-index: 4;
 }
 
 #pantallaBienvenida h1 {
-  font-size: 2.5em;
+  font-size: 2.2em;
   margin-bottom: 10px;
+  white-space: nowrap; /* 🔒 evita el salto de línea */
 }
 
 #pantallaBienvenida p {
-  font-size: 1.2em;
+  font-size: 1.1em;
   color: #aaa;
   margin-bottom: 40px;
-  max-width: 80%;
+  max-width: 90%;
 }
 
 #pantallaBienvenida button {
@@ -139,6 +141,7 @@
   background: #4fd1c5;
   color: black;
 }
+
 
 
     #canvas { display: none; }
