@@ -113,11 +113,28 @@
   z-index: 4;
 }
 
-#pantallaBienvenida h1 {
-  font-size: 2.2em;
-  margin-bottom: 10px;
-  white-space: nowrap; /* 🔒 evita el salto de línea */
+.tituloBienvenida {
+  font-size: 2.5em;
+  line-height: 1.2em;
+  margin-bottom: 20px;
+  text-align: center;
 }
+
+.tituloBienvenida .linea1,
+.tituloBienvenida .linea2,
+.tituloBienvenida .linea3 {
+  display: block;
+}
+
+.tituloBienvenida .linea2 {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.tituloBienvenida .linea3 {
+  color: #4fd1c5; 
+}
+
 
 #pantallaBienvenida p {
   font-size: 1.1em;
@@ -151,7 +168,12 @@
 <body>
 <!-- Pantalla de bienvenida -->
 <div id="pantallaBienvenida">
-  <h1>Bienvenidos a <span style="color:#4fd1c5">Med-Viewer</span></h1>
+  <h1 class="tituloBienvenida">
+    <span class="linea1">Bienvenidos</span><br>
+    <span class="linea2">a</span><br>
+    <span class="linea3">Med-Photo</span>
+  </h1>
+  
   <p>Capturá, organizá y almacená tus imágenes clínicas de forma simple y segura.</p>
   <button onclick="entrarAplicacion()">Entrar</button>
 </div>
