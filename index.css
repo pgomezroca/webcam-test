@@ -1,92 +1,97 @@
 
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background: black;
-  color: white;
-}
+    html, body {
+      margin: 0; 
+      padding: 0;
+      background: black;
+      height: 100%;
+      overflow: hidden;
+      color: white;
+      font-family: sans-serif;
+    }
 
-.pantalla {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  gap: 20px;
-  padding: 20px;
-}
+    #formulario {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      z-index: 3;
+    }
 
-.visible {
-  display: flex !important;
-}
+    #formulario input {
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      border-radius: 5px;
+      border: none;
+    }
 
-input, select {
+    #formulario button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #formulario select {
   padding: 10px;
   font-size: 18px;
   width: 80%;
+  border-radius: 5px;
   border: none;
-  border-bottom: 2px solid white;
-  background: transparent;
-  color: white;
 }
 
-button {
-  padding: 12px 24px;
-  font-size: 18px;
-  background: white;
-  color: black;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    #video, #foto {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
 
-.botonControl {
-  padding: 15px 30px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: 2px solid white;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  cursor: pointer;
-}
+    #botonFoto {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 80px;
+      background: red;
+      border: 5px solid white;
+      border-radius: 50%;
+      z-index: 2;
+      cursor: pointer;
+    }
 
-.diagnosticoSelect {
-  display: none;
-}
+    #controles {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      z-index: 2;
+    }
 
-video, #foto {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: 1;
-}
+    .botonControl {
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: 2px solid white;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-#botonFoto {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 80px;
-  background: red;
-  border: 5px solid white;
-  border-radius: 50%;
-  z-index: 2;
-  cursor: pointer;
-}
-
-#controles {
-  position: absolute;
-  bottom: 30px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  z-index: 2;
-}
+    .botonControl:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
     #pantallaBienvenida {
   position: absolute;
   top: 0; left: 0;
@@ -149,8 +154,5 @@ video, #foto {
   background: #4fd1c5;
   color: black;
 }
-.diagnosticoSelect {
-  display: none;
-}
-
-    #canvas { display: none; }
+ #canvas { display: none; } 
+ 

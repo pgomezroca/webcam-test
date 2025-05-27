@@ -4,164 +4,8 @@
   <meta charset="UTF-8">
   <title>Med Photo V3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      margin: 0; 
-      padding: 0;
-      background: black;
-      height: 100%;
-      overflow: hidden;
-      color: white;
-      font-family: sans-serif;
-    }
+  <link rel="stylesheet" href="index.css">
 
-    #formulario {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: black;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      z-index: 3;
-    }
-
-    #formulario input {
-      padding: 10px;
-      font-size: 18px;
-      width: 80%;
-      border-radius: 5px;
-      border: none;
-    }
-
-    #formulario button {
-      padding: 12px 24px;
-      font-size: 18px;
-      background: white;
-      color: black;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #formulario select {
-  padding: 10px;
-  font-size: 18px;
-  width: 80%;
-  border-radius: 5px;
-  border: none;
-}
-
-    #video, #foto {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      z-index: 1;
-    }
-
-    #botonFoto {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px; height: 80px;
-      background: red;
-      border: 5px solid white;
-      border-radius: 50%;
-      z-index: 2;
-      cursor: pointer;
-    }
-
-    #controles {
-      position: absolute;
-      bottom: 30px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      z-index: 2;
-    }
-
-    .botonControl {
-      padding: 15px 30px;
-      font-size: 18px;
-      border-radius: 10px;
-      border: 2px solid white;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .botonControl:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-    #pantallaBienvenida {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: #111;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 30px;
-  box-sizing: border-box;
-  z-index: 4;
-}
-
-.tituloBienvenida {
-  font-size: 2.5em;
-  line-height: 1em;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.tituloBienvenida .linea1,
-.tituloBienvenida .linea2,
-.tituloBienvenida .linea3 {
-  display: block;
-}
-
-.tituloBienvenida .linea2 {
-  font-size: 0.8em;
-  opacity: 0.8;
-}
-
-.tituloBienvenida .linea3 {
-  font-size: 120%;
-  color: #4fd1c5; 
-}
-
-
-#pantallaBienvenida p {
-  font-size: 1.1em;
-  color: #aaa;
-  margin-bottom: 40px;
-  max-width: 90%;
-}
-
-#pantallaBienvenida button {
-  padding: 15px 40px;
-  font-size: 18px;
-  background: transparent;
-  border: 2px solid #4fd1c5;
-  color: #4fd1c5;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-#pantallaBienvenida button:hover {
-  background: #4fd1c5;
-  color: black;
-}
- #canvas { display: none; } 
- </style>
 </head>
 <body>
 <!-- Pantalla de bienvenida -->
@@ -216,20 +60,75 @@
     </select>
     <button onclick="iniciarCamara()">Continuar</button>
   </div>
-
+  <div id="modoCaptura" style="
+      display:none;
+      position:absolute;
+      top:0; left:0;
+      width:100vw; height:100vh;
+      background:rgba(0,0,0,0.8);
+      
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:20px;
+      z-index:5;
+  ">
+    <button class="botonControl" onclick="setModo('foto')">
+      
+    </button>
+    <button class="botonControl" onclick="setModo('video')">
+      Grabar Video
+    </button>
+  </div>
+ 
   <!-- Cámara y foto -->
   <video id="video" autoplay playsinline style="display:none;"></video>
   <img id="foto" style="display:none;" />
   <canvas id="canvas"></canvas>
 
-  <!-- Botón captura -->
-  <button id="botonFoto" onclick="sacarFoto()" style="display:none;"></button>
-
+ 
+ 
   <!-- Controles -->
   <div id="controles" style="display:none;">
-    <button class="botonControl" onclick="guardarFoto()">Guardar</button>
-    <button class="botonControl" onclick="repetirFoto()">Volver a tomar</button>
-    <button class="botonControl" onclick="mostrarDespedida()">Finalizar</button>
+  
+      <!-- Botón para tomar foto -->
+      <button id="botonFoto" class="botonControl"
+        onclick="sacarFoto()"style="display:none;"
+      >Tomar Foto
+      </button>
+    
+      <!-- Botones para grabar vídeo -->
+      <button id="startRec" class="botonControl"
+        onclick="startRecording()"style="display:none;"
+      >  Grabar Video
+      </button>
+      <button id="stopRec"class="botonControl"
+        onclick="stopRecording()" style="display:none;"
+      > Detener Video
+      </button>
+    
+      <!-- Botones generales para foto/video -->
+      <button
+        class="botonControl"
+        onclick="guardarFoto()"
+      >
+         Guardar
+      </button>
+      <button id="guardarVideo" class="botonControl" onclick="guardarVideo()" style="display:none;">
+       Guardar Vídeo
+      </button>
+      <button id="finalizar"
+        class="botonControl"
+        onclick="repetirFoto()"
+      >
+         Volver a tomar
+      </button>
+      <button
+        class="botonControl"
+        onclick="mostrarDespedida()"
+      >
+         Finalizar
+      </button> 
   </div>
     <!-- Pantalla de despedida -->
     <div id="pantallaDespedida" style="display:none;
@@ -251,122 +150,7 @@
 
   
   <script src="https://unpkg.com/piexifjs"></script>
-  <script>
-    let stream, dataURL;
-    let dni = "", region = "", diagnostico = "";
+  <script src="index.js"></script>
 
-    function entrarAplicacion() {
-  document.getElementById('pantallaBienvenida').style.display = 'none';
-  document.getElementById('formulario').style.display = 'flex';
-}
-function mostrarSubregion() {
-      // Oculta todos los selects de subregión
-      document.querySelectorAll('.subregion')
-        .forEach(sel => sel.style.display = 'none');
-
-      // Muestra el que corresponde
-      const region = document.getElementById('regionAnatomica').value;
-      const sub = document.getElementById('subregion-' + region);
-      if (sub) sub.style.display = 'block';
-    }
-   
-      function iniciarCamara() {
-      dni = document.getElementById('dni').value.trim();
-      // 2. Región
-  const regionSel = document.getElementById('regionAnatomica').value;
-  const sub = Array.from(document.querySelectorAll('.subregion'))
-    .find(s => s.style.display === 'block');
-  const diag = sub ? sub.value : "";
-
-  // 4. Validación
-  if (!dni || !regionSel || !diag) {
-    alert("Por favor, completá DNI, región anatómica y diagnóstico");
-    return;
-  }
-
-  // 5. Asigno a las variables globales
-  region     = regionSel;
-  diagnostico = diag;
-     
-      document.getElementById('formulario').style.display = 'none';
-
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(s => {
-          stream = s;
-          const video = document.getElementById('video');
-          video.srcObject = stream;
-          video.style.display = "block";
-          document.getElementById('botonFoto').style.display = "block";
-        })
-        .catch(err => alert("Error al acceder a la cámara: " + err.message));
-      }
-
-    function sacarFoto() {
-      const video = document.getElementById('video');
-      const canvas = document.getElementById('canvas');
-      const foto = document.getElementById('foto');
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-
-      dataURL = canvas.toDataURL('image/jpeg', 0.92);
-      foto.src = dataURL;
-
-      foto.style.display = "block";
-      video.style.display = "none";
-      document.getElementById('botonFoto').style.display = "none";
-      document.getElementById('controles').style.display = "flex";
-    }
-
-    function guardarFoto() {
-      if (!dataURL) return;
-
-      const fecha = new Date().toISOString().replace(/[:.]/g, '-');
-      const nombreArchivo =  `${dni}_${region}_${diagnostico}_${fecha}.jpg`;
-
-      const exifObj = {
-        "0th": {
-          [piexif.ImageIFD.Make]: "MiAppWeb",
-          [piexif.ImageIFD.Artist]: "Profesional",
-          [piexif.ImageIFD.ImageDescription]: diagnostico
-        },
-        "Exif": {
-          [piexif.ExifIFD.DateTimeOriginal]: new Date().toISOString().slice(0, 19).replace(/:/g, ':'),
-        }
-      };
-
-      const exifBytes = piexif.dump(exifObj);
-      const newDataURL = piexif.insert(exifBytes, dataURL);
-
-      const link = document.createElement('a');
-      link.href = newDataURL;
-      link.download = nombreArchivo;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    function repetirFoto() {
-      document.getElementById('foto').style.display = "none";
-      document.getElementById('video').style.display = "block";
-      document.getElementById('botonFoto').style.display = "block";
-      document.getElementById('controles').style.display = "none";
-    }
-    function mostrarDespedida() {
-  // 1) Detén la cámara si está activa
-  if (stream) stream.getTracks().forEach(t => t.stop());
-
-  // 2) Oculta todas las pantallas y elementos
-  ['formulario','pantallaInicial','pantallaUpload','pantallaBienvenida',
-   'video','foto','controles'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-
-  // 3) Muestra la despedida
-  document.getElementById('pantallaDespedida').style.display = 'flex';
-}
-  </script>
 </body>
 </html>
