@@ -80,21 +80,21 @@
        Video
     </button>
   </div>
- 
+  <button id="btnBack" class="botonControl backBtn" onclick="goBack()" style="display:none;">
+    ← Atrás
+  </button>
+  
   <!-- Cámara y foto -->
   <video id="video" autoplay playsinline style="display:none;"></video>
   <img id="foto" style="display:none;" />
   <canvas id="canvas"></canvas>
-
+ <!-- Botón para tomar foto -->
+ <button id="botonFoto" class="botonControl"
+ onclick="sacarFoto()"style="display:none;"
+>
+</button>
   <!-- Controles -->
   <div id="controles" style="display:none;">
-  
-      <!-- Botón para tomar foto -->
-      <button id="botonFoto" class="botonControl"
-        onclick="sacarFoto()"style="display:none;"
-      >
-      </button>
-    
       <!-- Botones para grabar vídeo -->
       <button id="startRec" class="botonControl"
         onclick="startRecording()"style="display:none;"
@@ -104,22 +104,27 @@
         onclick="stopRecording()" style="display:none;"
       > Detener Video
       </button>
-    
+      <button id="guardarVideo" class="botonControl" onclick="guardarVideo()" style="display:none;">
+        Guardar Vídeo
+       </button>
+
+       <button class="btnRepetirVideo" onclick="repetirVideo()">
+        Volver a grabar video
+      </button>
+      
       <!-- Botones generales para foto/video -->
-      <button
+      <button id="guardarFoto"
         class="botonControl"
         onclick="guardarFoto()"
       >
          Guardar
       </button>
-      <button id="guardarVideo" class="botonControl" onclick="guardarVideo()" style="display:none;">
-       Guardar Vídeo
-      </button>
-      <button id="finalizar"
+      <!--finalizar para ambos-->
+      <button id="btnRepetirFoto"
         class="botonControl"
         onclick="repetirFoto()"
       >
-         Volver a tomar
+         Volver a tomar foto
       </button>
       <button
         class="botonControl"
@@ -142,11 +147,10 @@
         Términos &amp; Condiciones
       </a>
     </p>
-   <p>Cuando quieras salir, cierra la pestaña de tu navegador.</p>
+   <h6>Para salir, cierra la pestaña de tu navegador.</h6>
  
 </div>
 
-  
   <script src="https://unpkg.com/piexifjs"></script>
   <script src="index.js"></script>
 

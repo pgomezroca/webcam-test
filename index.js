@@ -3,13 +3,69 @@
 let stream, dataURL;
 let mediaRecorder;
 let recordedChunks = [];
-
 let dni = "", region = "", diagnostico = "";
 let modo = 'foto';
-function entrarAplicacion() {
-document.getElementById('pantallaBienvenida').style.display = 'none';
-document.getElementById('formulario').style.display = 'flex';
+//navegacion
+// Guarda el historial de pantallas por su id
+let historyScreens = ['pantallaBienvenida'];
 
+// Muestra sólo la pantalla indicada
+function showScreen(screen) {
+  // Lista todas las secciones de tu app
+  const all = ['pantallaBienvenida', 'formulario','modoCaptura', 'video',       
+    'foto','controles', 'pantallaDespedida'];
+  // 1) Oculta todo
+  all.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  // 2) Muestra la que toque 
+  switch(screen) {
+    case 'pantallaBienvenida':
+      document.getElementById('pantallaBienvenida').style.display = 'flex';
+      break;
+    case 'formulario':
+      document.getElementById('formulario').style.display = 'flex';
+      break;
+    case 'modoCaptura':
+      document.getElementById('modoCaptura').style.display = 'flex';
+      break;
+    case 'video':  // uso lógico para foto o vídeo activo
+      document.getElementById('video').style.display    = 'block';
+      document.getElementById('controles').style.display = 'flex';
+      break;
+    case 'foto':  // tras “sacarFoto()”
+      document.getElementById('foto').style.display      = 'block';
+      document.getElementById('controles').style.display = 'flex';
+      break;
+    case 'despedida':
+      document.getElementById('pantallaDespedida').style.display = 'flex';
+      break;
+  }
+
+  // 3) Controla visibilidad del botón Atrás
+  const back = document.getElementById('btnBack');
+  back.style.display = historyScreens.length > 1
+    ? 'inline-block'
+    : 'none';
+}
+
+// Empuja y muestra
+function navigateTo(screen) {
+  historyScreens.push(screen);
+  showScreen(screen);
+}
+
+// Retrocede y muestra anterior
+function goBack() {
+  if (historyScreens.length > 1) {
+    historyScreens.pop();
+    showScreen(historyScreens[historyScreens.length - 1]);
+  }
+}
+//fin navegacion
+function entrarAplicacion() {
+  navigateTo('formulario');
 }
 function mostrarSubregion() {
   // Oculta todos los selects de subregión
@@ -28,7 +84,6 @@ function mostrarSubregion() {
   const sub = Array.from(document.querySelectorAll('.subregion'))
 .find(s => s.style.display === 'block');
 const diag = sub ? sub.value : "";
-
 //  Validación
 if (!dni || !regionSel || !diag) {
 alert("Por favor, completá DNI, región anatómica y diagnóstico");
@@ -39,34 +94,38 @@ return;
 region     = regionSel;
 diagnostico = diag;
  
-  document.getElementById('formulario').style.display = 'none';
-
   navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
     .then(s => {
       stream = s;
-      document.getElementById('modoCaptura').style.display = 'flex';
+      navigateTo('modoCaptura');
     })
     .catch(err => alert("Error al acceder a la cámara: " + err.message));
   }
   function setModo(selection) {
-modo = selection;
-document.getElementById('modoCaptura').style.display = 'none';
+    modo = selection;
+    document.getElementById('modoCaptura').style.display = 'none';
 
-const video = document.getElementById('video');
-video.srcObject = stream;
-video.style.display = 'block';
-const ctrls = document.getElementById('controles');
-ctrls.style.display = 'flex';
+  const video = document.getElementById('video');
+  video.srcObject = stream;
+  video.style.display = 'block';
+  const ctrls = document.getElementById('controles');
+  ctrls.style.display = 'flex';
 
 if (modo === 'foto') {
 document.getElementById('botonFoto').style.display = 'block';
+document.getElementById('guardarFoto').style.display = 'inline-block';
 document.getElementById('startRec').style.display = 'none';
 document.getElementById('stopRec').style.display  = 'none';
+document.getElementById('btnRepetirFoto').style.display  = 'flex';
+document.getElementById('btnRepetirVideo').style.display = 'none';
 } else { // modo === 'video'
 document.getElementById('botonFoto').style.display = 'none';
 document.getElementById('startRec').style.display = 'inline-block';
 document.getElementById('stopRec').style.display  = 'inline-block';
-document.getElementById('finalizar').style.display = 'flex';
+document.getElementById('btnRepetirVideo').style.display = 'flex';
+document.getElementById('guardarVideo').style.display = 'flex';
+document.getElementById('guardarFoto').style.display = 'none';
+document.getElementById('btnRepetirFoto').style.display  = 'none';
 }
 }
 function sacarFoto() {
@@ -119,7 +178,7 @@ function repetirFoto() {
   document.getElementById('foto').style.display = "none";
   document.getElementById('video').style.display = "block";
   document.getElementById('botonFoto').style.display = "block";
-  document.getElementById('controles').style.display = "none";
+  document.getElementById('controles').style.display = "inline-block";
 }
 function startRecording() {
   if (!stream) return alert("La cámara no está iniciada");
@@ -130,11 +189,13 @@ function startRecording() {
 
   // cada vez que haya datos disponibles, los guardamos
   mediaRecorder.ondataavailable = e => {
+    console.log("chunk recibido:", e.data.size, "bytes");
     if (e.data.size > 0) recordedChunks.push(e.data);
   };
 
   // cuando pare de grabar, montamos el blob y lo reproducimos
   mediaRecorder.onstop = () => {
+    console.log("🛑 onstop → total de recordedChunks:", recordedChunks.length);
     const blob = new Blob(recordedChunks, { type: 'video/webm' });
     const url = URL.createObjectURL(blob);
     const video = document.getElementById('video');
@@ -160,9 +221,10 @@ function startRecording() {
 }
 
 function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-  }
+  console.log("⏹ stopRecording() llamado");
+  if (!mediaRecorder) return console.warn("   mediaRecorder es null");
+  mediaRecorder.requestData();
+  mediaRecorder.stop();
 }
 function guardarVideo() {
   console.log("guardarVideo llamado");
@@ -189,17 +251,27 @@ function guardarVideo() {
   // Libera memoria
   URL.revokeObjectURL(url);
 }
-document.addEventListener('DOMContentLoaded', () => {
-  console.log("DOM listo: intentando enlazar guardarVideo");
-  const btnGuardar = document.getElementById('guardarVideo');
-  if (!btnGuardar) {
-    return console.error("No encontré #guardarVideo en el DOM");
-  }
-  btnGuardar.addEventListener('click', () => {
-    console.log("Click detectado en guardarVideo 👇");
-    guardarVideo();
-  });
-});
+//funcion guardar otro video
+function repetirVideo() {
+  // 1) Limpia los chunks que quedaron de la grabación anterior
+  recordedChunks = [];
+
+  // 2) Restaura el <video> al stream vivo
+  const video = document.getElementById('video');
+  video.srcObject = stream;    
+  video.src       = "";        
+  video.controls  = true;     // cambie a true
+  video.style.display = "block";
+  video.play();
+
+  // 3) Ajusta los botones
+  document.getElementById('startRec').style.display     = 'inline-block';  // listo para grabar
+  document.getElementById('stopRec').style.display      = 'inline-block';
+  document.getElementById('guardarVideo').style.display = 'inline-block';         
+  document.getElementById('finalizar').style.display    = 'inline-block';  
+}
+
+//mostrar despedida
 function mostrarDespedida() {
 // 1) Detén la cámara si está activa
 if (stream) stream.getTracks().forEach(t => t.stop());
