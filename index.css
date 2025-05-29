@@ -92,7 +92,7 @@
     }
 
     .botonControl {
-      padding: 10px px;
+      padding: 10px 10px;
       font-size: 15px;
       border-radius: 10px;
       border: 2px solid white;
@@ -106,19 +106,19 @@
       background: rgba(255, 255, 255, 0.3);
     }
     #pantallaBienvenida {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: #111;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 30px;
-  box-sizing: border-box;
-  z-index: 4;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #111;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   text-align: center;
+   padding: 30px;
+   box-sizing: border-box;
+   z-index: 4;
 }
 
 .tituloBienvenida {

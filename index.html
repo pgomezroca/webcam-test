@@ -29,35 +29,67 @@
       <option value="" disabled selected>Seleccioná región anatómica</option>
       <option value="cuello">Cuello</option>
       <option value="hombro">Hombro</option>
-      <option value="humero">Húmero</option>
+      <option value="brazo">Brazo</option>
       <option value="codo">Codo</option>
-      <!-- agrega aquí más regiones si las vas a tener -->
+      <option value="antebrazo">Antebrazo</option>
+      <option value="munieca">Muñeca</option>
+      <option value="mano">Mano</option>
+      
     </select>
-
-    <!-- Sub-selects por región (cada option será un diagnóstico) -->
-    <select id="subregion-cuello"      class="subregion" style="display:none;">
-      <option value="" disabled selected>Seleccioná diagnóstico de cuello</option>
-      <option value="cuello-a">Cuello A</option>
-      <option value="cuello-b">Cuello B</option>
+  <!-- Sub-selects por región (cada option será un diagnóstico) -->
+    <select id="subregion-cuello"     class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de Cuello</option>
+      <option value="plexo-braquial">plexo-braquial</option>
+      <option value="fractura-clavicula">Fractura de clavícula</option>
     </select>
 
     <select id="subregion-hombro"     class="subregion" style="display:none;">
       <option value="" disabled selected>Seleccioná diagnóstico de hombro</option>
-      <option value="hombro-a">Hombro A</option>
-      <option value="hombro-b">Hombro B</option>
+      <option value="manguito-rotador">Manguito-rotador</option>
+      <option value="acromio-clavicular">Acromio-clavicular</option>
+      <option value="fx-escapula">Fractura-escápula</option>
+      <option value="fx-cabeza-humeral">Fx-cabeza-humeral</option>
+      <option value="otros">Otros</option>
     </select>
 
-    <select id="subregion-humero"     class="subregion" style="display:none;">
-      <option value="" disabled selected>Seleccioná diagnóstico de húmero</option>
-      <option value="humero-a">Húmero A</option>
-      <option value="humero-b">Húmero B</option>
+    <select id="subregion-brazo"      class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de brazo</option>
+      <option value="fracturas">Fracturas</option>
+      <option value="ruptura-biceps">Ruptura-biceps</option>
+      <option value="brazo-otro">Brazo-otro</option>
     </select>
 
     <select id="subregion-codo"       class="subregion" style="display:none;">
       <option value="" disabled selected>Seleccioná diagnóstico de codo</option>
-      <option value="codo-a">Codo A</option>
-      <option value="codo-b">Codo B</option>
+      <option value="fracturas-codo">Fracturas</option>
+      <option value="luxaciones-codo">Luxaciones de codo</option>
+      <option value="otro">Otro</option>
     </select>
+    <select id="subregion-antebrazo"       class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de antebrazo</option>
+      <option value="fracturas-antebrazo">Fracturas de antebrazo</option>
+      <option value="luxaciones-antebrazo">Luxaciones de antebrazo</option>
+      <option value="heridas-graves">Heridas graves</option>
+      <option value="otros-antebrazo">Otros</option>
+    </select>
+
+    <select id="subregion-munieca"       class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de muñeca</option>
+      <option value="fracturas">Fracturas de muñeca</option>
+      <option value="luxaciones-munieca">Luxaciones de muñeca</option>
+      <option value="heridas-graves-munieca">Heridas graves de muñeca</option>
+  </select>
+      
+      <select id="subregion-mano"       class="subregion" style="display:none;">
+        <option value="" disabled selected>Seleccioná diagnóstico de mano</option>
+        <option value="fracturas-mano">Fracturas de mano</option>
+        <option value="inestabilidades">Inestabilidades</option>
+        <option value="seccion-tendones-nervios">seccion de tendones y nervios</option>
+        <option value="amputaciones">Amputaciones</option>
+        <option value="tumores-mano">Tumores</option>
+        <option value="otros-mano">Otros</option>
+     </select>
+     
     <button onclick="iniciarCamara()">Continuar</button>
   </div>
   <div id="modoCaptura" style="
@@ -66,7 +98,6 @@
       top:0; left:0;
       width:100vw; height:100vh;
       background:rgba(0,0,0,0.8);
-      
       flex-direction:column;
       justify-content:center;
       align-items:center;
@@ -89,16 +120,14 @@
   <img id="foto" style="display:none;" />
   <canvas id="canvas"></canvas>
  <!-- Botón para tomar foto -->
- <button id="botonFoto" class="botonControl"
- onclick="sacarFoto()"style="display:none;"
->
-</button>
+ 
+  
   <!-- Controles -->
   <div id="controles" style="display:none;">
       <!-- Botones para grabar vídeo -->
       <button id="startRec" class="botonControl"
-        onclick="startRecording()"style="display:none;"
-      >  Grabar Video
+        onclick="startRecording()"style="display:none;">
+        Grabar Video
       </button>
       <button id="stopRec"class="botonControl"
         onclick="stopRecording()" style="display:none;"
@@ -112,7 +141,7 @@
         Volver a grabar video
       </button>
       
-      <!-- Botones generales para foto/video -->
+      <!-- Botones generales para foto -->
       <button id="guardarFoto"
         class="botonControl"
         onclick="guardarFoto()"
