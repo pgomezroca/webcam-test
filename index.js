@@ -178,7 +178,8 @@ function repetirFoto() {
   document.getElementById('foto').style.display = "none";
   document.getElementById('video').style.display = "block";
   document.getElementById('botonFoto').style.display = "block";
-  document.getElementById('controles').style.display = "inline-block";
+  document.getElementById('controles').style.display = "flex";
+  sacarFoto()
 }
 function startRecording() {
   if (!stream) return alert("La cámara no está iniciada");
