@@ -113,10 +113,10 @@ diagnostico = diag;
 
 if (modo === 'foto') {
 document.getElementById('botonFoto').style.display = 'block';
-document.getElementById('guardarFoto').style.display = 'inline-block';
+document.getElementById('guardarFoto').style.display = 'none';
 document.getElementById('startRec').style.display = 'none';
 document.getElementById('stopRec').style.display  = 'none';
-document.getElementById('btnRepetirFoto').style.display  = 'flex';
+document.getElementById('btnNuevaFoto').style.display  = 'none';
 document.getElementById('btnRepetirVideo').style.display = 'none';
 } else { // modo === 'video'
 document.getElementById('botonFoto').style.display = 'none';
@@ -125,7 +125,7 @@ document.getElementById('stopRec').style.display  = 'inline-block';
 document.getElementById('btnRepetirVideo').style.display = 'flex';
 document.getElementById('guardarVideo').style.display = 'flex';
 document.getElementById('guardarFoto').style.display = 'none';
-document.getElementById('btnRepetirFoto').style.display  = 'none';
+document.getElementById('btnNuevaFoto').style.display  = 'none';
 }
 }
 function sacarFoto() {
@@ -139,11 +139,12 @@ function sacarFoto() {
 
   dataURL = canvas.toDataURL('image/jpeg', 0.92);
   foto.src = dataURL;
-
+  
   foto.style.display = "block";
   video.style.display = "none";
   document.getElementById('botonFoto').style.display = "none";
-  document.getElementById('controles').style.display = "flex";
+  document.getElementById('guardarFoto').style.display   = 'inline-block';
+  document.getElementById('btnNuevaFoto').style.display  = 'inline-block';
 }
 
 function guardarFoto() {
@@ -174,12 +175,17 @@ function guardarFoto() {
   document.body.removeChild(link);
 }
 
-function repetirFoto() {
-  document.getElementById('foto').style.display = "none";
-  document.getElementById('video').style.display = "block";
-  document.getElementById('botonFoto').style.display = "block";
-  document.getElementById('controles').style.display = "flex";
-  sacarFoto()
+// Función para 'Tomar otra foto': limpiar y volver a cámara
+function nuevaFoto() {
+  const video = document.getElementById('video');
+  const foto  = document.getElementById('foto');
+
+  // Reset UI
+  foto.style.display                             = 'none';
+  video.style.display                            = 'block';
+  document.getElementById('botonFoto').style.display     = 'inline-block';
+  document.getElementById('guardarFoto').style.display   = 'none';
+  document.getElementById('btnNuevaFoto').style.display  = 'none';
 }
 function startRecording() {
   if (!stream) return alert("La cámara no está iniciada");

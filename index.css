@@ -105,6 +105,62 @@
     .botonControl:hover {
       background: rgba(255, 255, 255, 0.3);
     }
+    .video-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      border: none;
+      background: none;
+      padding: 0;
+    }
+    
+    .record-btn {
+      background: transparent;
+      border: 4px solid white;      /* borde exterior blanco */
+      padding: 8px;                  /* espacio transparente */
+      border-radius: 50%;
+    }
+    .record-btn::before {
+      content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: red;               /* círculo rojo interior */
+  border-radius: 50%;
+      
+    }
+    
+    .stop-btn {
+      position: relative;
+  background: transparent;
+  border: 4px solid white;
+  padding: 8px;
+  border-radius: 50%;
+    }
+    .stop-btn::before {
+      content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background: red;
+
+    }
+    
+    .save-btn {
+      background: #4fd1c5;
+    }
+    .save-btn::before {
+      content: '💾';
+      font-size: 20px;
+    }
     #pantallaBienvenida {
     position: absolute;
     top: 0; left: 0;

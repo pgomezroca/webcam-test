@@ -102,8 +102,7 @@
       justify-content:center;
       align-items:center;
       gap:20px;
-      z-index:5;
-  ">
+      z-index:5;">
     <button class="botonControl" onclick="setModo('foto')">
      Foto 
     </button>
@@ -127,19 +126,11 @@
   <!-- Controles -->
   <div id="controles" style="display:none;">
       <!-- Botones para grabar vídeo -->
-      <button id="startRec" class="botonControl"
-        onclick="startRecording()"style="display:none;">
-        Grabar Video
-      </button>
-      <button id="stopRec"class="botonControl"
-        onclick="stopRecording()" style="display:none;"
-      > Detener Video
-      </button>
-      <button id="guardarVideo" class="botonControl" onclick="guardarVideo()" style="display:none;">
-        Guardar Vídeo
-       </button>
-
-       <button class="btnRepetirVideo" onclick="repetirVideo()">
+      <button id="startRec" class="video-btn record-btn" onclick="startRecording()"></button>
+      <button id="stopRec"  class="video-btn stop-btn"   onclick="stopRecording()"></button>
+      <button id="guardarVideo" class="video-btn save-btn" onclick="guardarVideo()"></button>
+      
+       <button class="btnRepetirVideo" onclick="repetirVideo()" style="display:none;">
         Volver a grabar video
       </button>
       
@@ -151,11 +142,12 @@
          Guardar
       </button>
       <!--finalizar para ambos-->
-      <button id="btnRepetirFoto"
+      <button id="btnNuevaFoto"
         class="botonControl"
-        onclick="repetirFoto()"
+        onclick="nuevaFoto()"
+        style="display:none;"
       >
-         Volver a tomar foto
+        +Fotos
       </button>
       <button
         class="botonControl"
