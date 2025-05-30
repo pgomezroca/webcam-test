@@ -1,11 +1,13 @@
 
-// al principio de index.js
+
 let stream, dataURL;
 let mediaRecorder;
 let recordedChunks = [];
 let dni = "", region = "", diagnostico = "";
 let modo = 'foto';
-//navegacion
+let progressInterval = null;
+const maxDuration = 60000;
+
 // Guarda el historial de pantallas por su id
 let historyScreens = ['pantallaBienvenida'];
 
@@ -181,83 +183,88 @@ function nuevaFoto() {
   const foto  = document.getElementById('foto');
 
   // Reset UI
-  foto.style.display                             = 'none';
-  video.style.display                            = 'block';
+  foto.style.display     = 'none';
+  video.style.display    = 'block';
   document.getElementById('botonFoto').style.display     = 'inline-block';
   document.getElementById('guardarFoto').style.display   = 'none';
   document.getElementById('btnNuevaFoto').style.display  = 'none';
-}
+} 
 function startRecording() {
-  if (!stream) return alert("La cámara no está iniciada");
-  
   recordedChunks = [];
-  // crea el MediaRecorder con el stream de vídeo
   mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
-
-  // cada vez que haya datos disponibles, los guardamos
-  mediaRecorder.ondataavailable = e => {
-    console.log("chunk recibido:", e.data.size, "bytes");
-    if (e.data.size > 0) recordedChunks.push(e.data);
-  };
-
-  // cuando pare de grabar, montamos el blob y lo reproducimos
-  mediaRecorder.onstop = () => {
-    console.log("🛑 onstop → total de recordedChunks:", recordedChunks.length);
-    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-    const url = URL.createObjectURL(blob);
-    const video = document.getElementById('video');
-
-    // ponemos el vídeo en modo reproducción
-    video.srcObject = null;
-    video.src = url;
-    video.controls = true;
-    video.play();
-
-    // ocultamos botones de grabación y mostramos los generales
-    document.getElementById('startRec').style.display = 'none';
-    document.getElementById('stopRec').style.display  = 'none';
-    document.getElementById('controles').style.display = 'flex';
-  };
-
-  // ajusta visibilidad de botones
-  document.getElementById('startRec').style.display = 'none';
-  document.getElementById('stopRec').style.display  = 'inline-block';
-  document.getElementById('botonFoto').style.display = 'none';
-
+  mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
+  // mediaRecorder.onstop = saveRecording;   // ya no guarda automáticamente al detener
   mediaRecorder.start();
+
+  // UI: toggle botones
+  document.getElementById('startRec').style.display       = 'none';
+  document.getElementById('stopRec').style.display        = 'inline-block';
+  document.getElementById('recordIndicator').style.display = 'block';
+
+  startProgressBar();
 }
 
+// Detención de la grabación
 function stopRecording() {
-  console.log("⏹ stopRecording() llamado");
-  if (!mediaRecorder) return console.warn("   mediaRecorder es null");
-  mediaRecorder.requestData();
-  mediaRecorder.stop();
-}
-function guardarVideo() {
-  console.log("guardarVideo llamado");
-  if (!recordedChunks || recordedChunks.length === 0) {
-    return alert("No hay vídeo para guardar.");
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();   // al finalizar, disparará saveRecording()
   }
-  // Construye el blob
+
+  // UI: revertir botones
+  document.getElementById('stopRec').style.display        = 'none';
+  document.getElementById('startRec').style.display       = 'inline-block';
+  document.getElementById('recordIndicator').style.display = 'none';
+
+  stopProgressBar();
+}
+
+// Función que crea el archivo de vídeo y dispara la descarga
+function saveRecording() {
+  if (recordedChunks.length === 0) {
+    return;
+  }
   const blob = new Blob(recordedChunks, { type: 'video/webm' });
   const url  = URL.createObjectURL(blob);
-
-  // Genera un nombre con fecha y metadatos
-  const fecha = new Date().toISOString().replace(/[:.]/g, '-');
+  const fecha = new Date().toISOString().replace(/[:.]/g,'-');
   const nombre = `${dni}_${region}_${diagnostico}_${fecha}.webm`;
 
-  // Descarga automática
-  const a = document.createElement('a');
-  a.style.display = 'none';
-  a.href = url;
-  a.download = nombre;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  // Libera memoria
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = nombre;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+// Guardar vídeo manualmente con el botón
+function guardarVideo() {
+  if (recordedChunks.length === 0) {
+    alert('No hay video para guardar.');
+    return;
+  }
+  saveRecording();
+}
+
+// Barra de progreso durante la grabación
+function startProgressBar() {
+  const barFill = document.getElementById('progressFill');
+  const start   = Date.now();
+  progressInterval = setInterval(() => {
+    const elapsed = Date.now() - start;
+    const pct     = Math.min((elapsed / maxDuration) * 100, 100);
+    barFill.style.width = pct + '%';
+
+    if (pct >= 100) stopRecording();
+  }, 100);
+}
+
+function stopProgressBar() {
+  clearInterval(progressInterval);
+  document.getElementById('progressFill').style.width = '0%';
+}
+
+
 //funcion guardar otro video
 function repetirVideo() {
   // 1) Limpia los chunks que quedaron de la grabación anterior

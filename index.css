@@ -127,11 +127,11 @@
     }
     .record-btn::before {
       content: '';
-  display: block;
-  width: 24px;
-  height: 24px;
-  background: red;               /* círculo rojo interior */
-  border-radius: 50%;
+     display: block;
+     width: 24px;
+     height: 24px;
+     background: red;               
+     border-radius: 50%;
       
     }
     
@@ -158,8 +158,19 @@
       background: #4fd1c5;
     }
     .save-btn::before {
-      content: '💾';
+      content: '';
       font-size: 20px;
+    }
+    .record-indicator {
+      width: 12px;
+      height: 12px;
+      background: red;
+      border-radius: 50%;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0; }
     }
     #pantallaBienvenida {
     position: absolute;

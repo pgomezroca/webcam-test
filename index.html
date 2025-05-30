@@ -34,6 +34,8 @@
       <option value="antebrazo">Antebrazo</option>
       <option value="munieca">Muñeca</option>
       <option value="mano">Mano</option>
+      <option value="microcirugia">Microcirugia</option>
+      <option value="det">DET</option>
       
     </select>
   <!-- Sub-selects por región (cada option será un diagnóstico) -->
@@ -89,7 +91,18 @@
         <option value="tumores-mano">Tumores</option>
         <option value="otros-mano">Otros</option>
      </select>
-     
+     <select id="subregion-microcirugia"     class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico microcirugia</option>
+      <option value="reimplantes">Reimplantes</option>
+      <option value="colgajos">Colgajos</option>
+    </select>
+    <select id="subregion-det"      class="subregion" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de DET</option>
+      <option value="hombro">Hombro</option>
+      <option value="muñeca">Muñeca</option>
+      <option value="det-otro">DET-otro</option>
+    </select>
+
     <button onclick="iniciarCamara()">Continuar</button>
   </div>
   <div id="modoCaptura" style="
@@ -125,11 +138,21 @@
   
   <!-- Controles -->
   <div id="controles" style="display:none;">
+    <!-- Indicador parpadeante -->
+    <div id="recordIndicator" class="record-indicator" style="display:none;
+    margin-bottom:8px;">
+    </div>
       <!-- Botones para grabar vídeo -->
-      <button id="startRec" class="video-btn record-btn" onclick="startRecording()"></button>
+      <button id="startRec" class="video-btn record-btn" onclick="startRecording()" style="display: none;"></button>
       <button id="stopRec"  class="video-btn stop-btn"   onclick="stopRecording()"></button>
-      <button id="guardarVideo" class="video-btn save-btn" onclick="guardarVideo()"></button>
-      
+      <button id="guardarVideo" class="video-btn save-btn" onclick="guardarVideo()" style="display: none;"></button>
+       <!-- Barra de progreso -->
+    <div id="progressBar" style="width:100%; max-width:400px; height:4px;
+      background:rgba(255,255,255,0.3); border-radius:2px; overflow:hidden;">
+    <div id="progressFill" style="width:0%; height:100%; background:red;
+      transition: width 0.1s linear;">
+    </div>
+    </div>
        <button class="btnRepetirVideo" onclick="repetirVideo()" style="display:none;">
         Volver a grabar video
       </button>
