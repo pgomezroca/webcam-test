@@ -121,13 +121,17 @@ document.getElementById('stopRec').style.display  = 'none';
 document.getElementById('btnNuevaFoto').style.display  = 'none';
 document.getElementById('btnRepetirVideo').style.display = 'none';
 } else { // modo === 'video'
-document.getElementById('botonFoto').style.display = 'none';
-document.getElementById('startRec').style.display = 'inline-block';
-document.getElementById('stopRec').style.display  = 'inline-block';
-document.getElementById('btnRepetirVideo').style.display = 'flex';
-document.getElementById('guardarVideo').style.display = 'flex';
-document.getElementById('guardarFoto').style.display = 'none';
-document.getElementById('btnNuevaFoto').style.display  = 'none';
+  document.getElementById('botonFoto').style.display    = 'none';
+  document.getElementById('guardarFoto').style.display   = 'none';
+  document.getElementById('btnNuevaFoto').style.display  = 'none';
+
+  // Mostrar vídeo
+  document.getElementById('startRec').style.display     = 'inline-block';
+  document.getElementById('stopRec').style.display      = 'none';
+  document.getElementById('guardarVideo').style.display = 'none';
+  document.getElementById('recordIndicator').style.display = 'none';
+  document.getElementById('progressBar').style.display  = 'block';
+
 }
 }
 function sacarFoto() {
@@ -200,7 +204,7 @@ function startRecording() {
   document.getElementById('startRec').style.display       = 'none';
   document.getElementById('stopRec').style.display        = 'inline-block';
   document.getElementById('recordIndicator').style.display = 'block';
-
+  document.getElementById('guardarVideo').style.display    = 'none';
   startProgressBar();
 }
 
@@ -214,6 +218,7 @@ function stopRecording() {
   document.getElementById('stopRec').style.display        = 'none';
   document.getElementById('startRec').style.display       = 'inline-block';
   document.getElementById('recordIndicator').style.display = 'none';
+  document.getElementById('guardarVideo').style.display    = 'inline-block';
 
   stopProgressBar();
 }
@@ -239,6 +244,8 @@ function saveRecording() {
 
 // Guardar vídeo manualmente con el botón
 function guardarVideo() {
+  console.log('GuardarVideo → recordedChunks.length =', recordedChunks.length);
+  
   if (recordedChunks.length === 0) {
     alert('No hay video para guardar.');
     return;
