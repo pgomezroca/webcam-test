@@ -15,7 +15,7 @@ let historyScreens = ['pantallaBienvenida'];
 function showScreen(screen) {
   // Lista todas las secciones de tu app
   const all = ['pantallaBienvenida', 'formulario','modoCaptura', 'video',       
-    'foto','controles', 'pantallaDespedida'];
+    'foto','controles', 'pantallaDespedida','pantallaUpload'  ];
   // 1) Oculta todo
   all.forEach(id => {
     const el = document.getElementById(id);
@@ -42,6 +42,9 @@ function showScreen(screen) {
       break;
     case 'despedida':
       document.getElementById('pantallaDespedida').style.display = 'flex';
+      break;
+      case 'pantallaUpload':
+      document.getElementById('pantallaUpload').style.display = 'flex';
       break;
   }
 
@@ -291,7 +294,23 @@ function repetirVideo() {
   document.getElementById('guardarVideo').style.display = 'inline-block';         
   document.getElementById('finalizar').style.display    = 'inline-block';  
 }
+//-------------sector clasificar-----------
+document.getElementById('btnClasificar')
+.addEventListener('click', () => {
+  navigateTo('pantallaUpload');
+});
+function mostrarSubregionUpload() {
+  // 1) Oculto todos los selects de diagnóstico
+  document.querySelectorAll('.subregion-upload')
+    .forEach(sel => sel.style.display = 'none');
 
+  // 2) Leo el valor elegido en el select con id="regionUpload"
+  const region = document.getElementById('regionUpload').value;
+
+  // 3) Muestro el select asociado, cuyo id es "subregionUpload-" + ese valor
+  const sub = document.getElementById('subregionUpload-' + region);
+  if (sub) sub.style.display = 'block';
+}
 //mostrar despedida
 function mostrarDespedida() {
 // 1) Detén la cámara si está activa
@@ -307,3 +326,4 @@ if (el) el.style.display = 'none';
 // 3) Muestra la despedida
 document.getElementById('pantallaDespedida').style.display = 'flex';
 }
+ 

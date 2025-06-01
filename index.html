@@ -18,6 +18,7 @@
   
   <p>Capturá, organizá y almacená tus imágenes clínicas de forma simple y segura.</p>
   <button onclick="entrarAplicacion()">Entrar</button>
+  <button id="btnClasificar">Clasificar foto</button>
 </div>
 
   <!-- Formulario -->
@@ -197,6 +198,93 @@
  
 </div>
 
+ <!-- Pantalla de clasificar -->
+ <div id="pantallaUpload"style="display:none; flex-direction:column; align-items:center;">
+  <h2>Clasificador de fotos</h2>
+  <h3>complete el formulario con los datos de cada foto que cargue</h3>
+  <input type="file" id="uploadInput" accept="image/*" />
+  <input type="text" id="dniUpload" placeholder="DNI (opcional)" />
+  <select id="regionUpload" onchange="mostrarSubregionUpload()" required>
+    <option value="" disabled selected>Seleccioná región anatómica</option>
+    <option value="cuello">Cuello</option>
+    <option value="hombro">Hombro</option>
+    <option value="brazo">Brazo</option>
+    <option value="codo">Codo</option>
+    <option value="antebrazo">Antebrazo</option>
+    <option value="munieca">Muñeca</option>
+    <option value="mano">Mano</option>
+    <option value="microcirugia">Microcirugia</option>
+    <option value="det">DET</option>
+  </select>
+  <select id="subregionUpload-cuello"     class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico de Cuello</option>
+    <option value="plexo-braquial">plexo-braquial</option>
+    <option value="fractura-clavicula">Fractura de clavícula</option>
+  </select>
+
+  <select id="subregionUpload-hombro"     class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico de hombro</option>
+    <option value="manguito-rotador">Manguito-rotador</option>
+    <option value="acromio-clavicular">Acromio-clavicular</option>
+    <option value="fx-escapula">Fractura-escápula</option>
+    <option value="fx-cabeza-humeral">Fx-cabeza-humeral</option>
+    <option value="otros">Otros</option>
+  </select>
+
+  <select id="subregionUpload-brazo"      class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico de brazo</option>
+    <option value="fracturas">Fracturas</option>
+    <option value="ruptura-biceps">Ruptura-biceps</option>
+    <option value="brazo-otro">Brazo-otro</option>
+  </select>
+
+  <select id="subregionUpload-codo"       class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico de codo</option>
+    <option value="fracturas-codo">Fracturas</option>
+    <option value="luxaciones-codo">Luxaciones de codo</option>
+    <option value="otro">Otro</option>
+  </select>
+  <select id="subregionUpload-antebrazo"       class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico de antebrazo</option>
+    <option value="fracturas-antebrazo">Fracturas de antebrazo</option>
+    <option value="luxaciones-antebrazo">Luxaciones de antebrazo</option>
+    <option value="heridas-graves">Heridas graves</option>
+    <option value="otros-antebrazo">Otros</option>
+  </select>
+
+  <select id="subregionUpload-muñeca"       class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico de muñeca</option>
+    <option value="fracturas">Fracturas de muñeca</option>
+    <option value="luxaciones-muñeca">Luxaciones de muñeca</option>
+    <option value="heridas-graves-muñeca">Heridas graves de muñeca</option>
+</select>
+    
+    <select id="subregionUpload-mano"       class="subregion-upload" style="display:none;">
+      <option value="" disabled selected>Seleccioná diagnóstico de mano</option>
+      <option value="fracturas-mano">Fracturas de mano</option>
+      <option value="inestabilidades">Inestabilidades</option>
+      <option value="seccion-tendones-nervios">seccion de tendones y nervios</option>
+      <option value="amputaciones">Amputaciones</option>
+      <option value="tumores-mano">Tumores</option>
+      <option value="otros-mano">Otros</option>
+   </select>
+   <select id="subregionUpload-microcirugia"     class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico microcirugia</option>
+    <option value="reimplantes">Reimplantes</option>
+    <option value="colgajos">Colgajos</option>
+  </select>
+  <select id="subregionUpload-det"      class="subregion-upload" style="display:none;">
+    <option value="" disabled selected>Seleccioná diagnóstico de DET</option>
+    <option value="hombro">Hombro</option>
+    <option value="muñeca">Muñeca</option>
+    <option value="det-otro">DET-otro</option>
+  </select>
+
+  <button id="guardarUpload">Guardar y descargar</button>
+  <button id="cancelarUpload">Volver</button>
+</div>
+
+ </div>
   <script src="https://unpkg.com/piexifjs"></script>
   <script src="index.js"></script>
 
