@@ -270,4 +270,12 @@
   color: black;
 }
  #canvas { display: none; } 
- 
+ #feedback {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #4fd1c5;
+}
+
+#feedback span {
+  font-weight: bold;
+}

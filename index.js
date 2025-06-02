@@ -311,6 +311,114 @@ function mostrarSubregionUpload() {
   const sub = document.getElementById('subregionUpload-' + region);
   if (sub) sub.style.display = 'block';
 }
+function iniciarImportacion() {
+  // Tomo los valores del formulario
+  const dni = document.getElementById('dniUpload').value.trim();
+  const regionSel = document.getElementById('regionUpload').value;
+  const sub = Array.from(document.querySelectorAll('.subregion-upload'))
+    .find(s => s.style.display === 'block');
+  const diag = sub ? sub.value : "";
+
+  // Validación: región y diagnóstico obligatorios; DNI opcional
+  if (!regionSel || !diag) {
+    alert("Por favor, completá región anatómica y diagnóstico");
+    return;
+  }
+
+  // Si pasó la validación, abro el selector de archivos
+  document.getElementById('uploadInput').click();
+}
+// Llamar a esta función cuando cambie el <input type="file">
+document.getElementById('uploadInput')
+  .addEventListener('change', function() {
+    const archivos = this.files;
+    const feedbackDiv = document.getElementById('feedback');
+
+    if (archivos.length === 0) {
+      feedbackDiv.textContent = '';
+      return;
+    }
+
+    if (archivos.length === 1) {
+      feedbackDiv.innerHTML = `1 archivo seleccionado: <span>${archivos[0].name}</span>`;
+    } else {
+      // Listar nombres de todos o simplemente mostrar la cantidad
+      const listaNombres = Array.from(archivos)
+        .map(file => file.name)
+        .join(', ');
+      feedbackDiv.innerHTML = `${archivos.length} archivos seleccionados: <span>${listaNombres}</span>`;
+    }
+  });
+  //definicion funcion procesar
+  function procesarYGuardarArchivos(files) {
+    // Obtengo los valores del formulario
+    const dni = document.getElementById('dniUpload').value.trim();
+    const region = document.getElementById('regionUpload').value;
+    const subSelect = Array.from(document.querySelectorAll('.subregion-upload'))
+      .find(s => s.style.display === 'block');
+    const diagnostico = subSelect ? subSelect.value : '';
+  
+    // Recorro cada archivo
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+  
+      reader.onload = function (e) {
+        const dataURL = e.target.result;
+  
+        // Construyo nombre de archivo con etiquetas y timestamp
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const partes = file.name.split('.');
+        const extension = partes.length > 1 ? partes.pop() : 'jpg';
+        const prefixDNI = dni ? dni + '_' : '';
+        const nombreFinal = `${prefixDNI}${region}_${diagnostico}_${timestamp}.${extension}`;
+  
+        // Armo objeto EXIF
+        const exifObj = {
+          "0th": {
+            [piexif.ImageIFD.Make]: "Med-Photo",
+            [piexif.ImageIFD.ImageDescription]: diagnostico
+          },
+          "Exif": {
+            [piexif.ExifIFD.DateTimeOriginal]: new Date().toISOString().slice(0, 19).replace(/:/g, ':')
+          }
+        };
+  
+        // Si hay DNI, guardo en Artist
+        if (dni) {
+          exifObj["0th"][piexif.ImageIFD.Artist] = dni;
+        }
+  
+        // Región como UserComment
+        exifObj["Exif"][piexif.ExifIFD.UserComment] = region;
+  
+        // Genero bytes EXIF e inserto en el DataURL
+        const exifBytes = piexif.dump(exifObj);
+        const newDataURL = piexif.insert(exifBytes, dataURL);
+  
+        // Creo enlace <a> para descarga y disparo click
+        const link = document.createElement('a');
+        link.href = newDataURL;
+        link.download = nombreFinal;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+  
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  //click en boton procesar
+  document.getElementById('btnProcesar')
+  .addEventListener('click', () => {
+    const archivos = document.getElementById('uploadInput').files;
+    if (!archivos || archivos.length === 0) {
+      alert('Primero debés seleccionar una o varias imágenes.');
+      return;
+    }
+    procesarYGuardarArchivos(archivos);
+  });
+
 //mostrar despedida
 function mostrarDespedida() {
 // 1) Detén la cámara si está activa
