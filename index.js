@@ -351,59 +351,28 @@ document.getElementById('uploadInput')
   });
   //definicion funcion procesar
   function procesarYGuardarArchivos(files) {
-    // Obtengo los valores del formulario
-    const dni = document.getElementById('dniUpload').value.trim();
-    const region = document.getElementById('regionUpload').value;
-    const subSelect = Array.from(document.querySelectorAll('.subregion-upload'))
-      .find(s => s.style.display === 'block');
-    const diagnostico = subSelect ? subSelect.value : '';
+    // Tomo valores del formulario para asignarlos a globals
+    const dniInput     = document.getElementById('dniUpload').value.trim();
+    const regionInput  = document.getElementById('regionUpload').value;
+    const subVisible   = Array.from(document.querySelectorAll('.subregion-upload'))
+                              .find(s => s.style.display === 'block');
+    const diagInput    = subVisible ? subVisible.value : '';
   
-    // Recorro cada archivo
-    Array.from(files).forEach((file) => {
+    Array.from(files).forEach(file => {
       const reader = new FileReader();
   
-      reader.onload = function (e) {
-        const dataURL = e.target.result;
+      reader.onload = function(e) {
+        // 1) Asigno globals como los necesita guardarFoto()
+        dataURL       = e.target.result;  // global
+        dni           = dniInput;         // global
+        region        = regionInput;      // global
+        diagnostico   = diagInput;        // global
   
-        // Construyo nombre de archivo con etiquetas y timestamp
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const partes = file.name.split('.');
-        const extension = partes.length > 1 ? partes.pop() : 'jpg';
-        const prefixDNI = dni ? dni + '_' : '';
-        const nombreFinal = `${prefixDNI}${region}_${diagnostico}_${timestamp}.${extension}`;
-  
-        // Armo objeto EXIF
-        const exifObj = {
-          "0th": {
-            [piexif.ImageIFD.Make]: "Med-Photo",
-            [piexif.ImageIFD.ImageDescription]: diagnostico
-          },
-          "Exif": {
-            [piexif.ExifIFD.DateTimeOriginal]: new Date().toISOString().slice(0, 19).replace(/:/g, ':')
-          }
-        };
-  
-        // Si hay DNI, guardo en Artist
-        if (dni) {
-          exifObj["0th"][piexif.ImageIFD.Artist] = dni;
-        }
-  
-        // Región como UserComment
-        exifObj["Exif"][piexif.ExifIFD.UserComment] = region;
-  
-        // Genero bytes EXIF e inserto en el DataURL
-        const exifBytes = piexif.dump(exifObj);
-        const newDataURL = piexif.insert(exifBytes, dataURL);
-  
-        // Creo enlace <a> para descarga y disparo click
-        const link = document.createElement('a');
-        link.href = newDataURL;
-        link.download = nombreFinal;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // 2) Llamo a la función probada que ya tienes
+        guardarFoto();
       };
   
+      // 3) Leo el archivo como DataURL
       reader.readAsDataURL(file);
     });
   }
