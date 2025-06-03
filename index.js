@@ -351,6 +351,9 @@ document.getElementById('uploadInput')
   });
   //definicion funcion procesar
   function procesarYGuardarArchivos(files) {
+    alert('Archivo seleccionado:\n' + 
+    'Nombre: ' + file.name + '\n' +
+    'Tipo MIME: ' + file.type);
     // Tomo valores del formulario para asignarlos a globals
     const dniInput     = document.getElementById('dniUpload').value.trim();
     const regionInput  = document.getElementById('regionUpload').value;
@@ -363,12 +366,12 @@ document.getElementById('uploadInput')
   
       reader.onload = function(e) {
         // 1) Asigno globals como los necesita guardarFoto()
-        dataURL       = e.target.result;  // global
-        dni           = dniInput;         // global
-        region        = regionInput;      // global
-        diagnostico   = diagInput;        // global
+        dataURL       = e.target.result;  
+        dni           = dniInput;         
+        region        = regionInput;      
+        diagnostico   = diagInput;        
   
-        // 2) Llamo a la función probada que ya tienes
+        
         guardarFoto();
       };
   
