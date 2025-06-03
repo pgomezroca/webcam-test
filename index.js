@@ -157,6 +157,7 @@ function sacarFoto() {
 }
 
 function guardarFoto() {
+ console.log('entre a guardarfoto')
   if (!dataURL) return;
 
   const fecha = new Date().toISOString().replace(/[:.]/g, '-');
@@ -370,9 +371,7 @@ document.getElementById('uploadInput')
         region        = regionInput;      
         diagnostico   = diagInput;        
   
-        alert('Archivo seleccionado:\n' + 
-        'Nombre: ' + file.name + '\n' +
-        'Tipo MIME: ' + file.type);
+       
         guardarFoto();
       };
   
