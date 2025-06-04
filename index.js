@@ -64,10 +64,55 @@ function navigateTo(screen) {
 // Retrocede y muestra anterior
 function goBack() {
   if (historyScreens.length > 1) {
+    // 1) Identifico cuál es la pantalla actual (antes de hacer pop)
+    const pantallaActual = historyScreens[historyScreens.length - 1];
+
+    // 2) Si la pantalla que vamos a 'salir' es "pantallaUpload", limpio su estado
+    if (pantallaActual === 'pantallaUpload') {
+      // - Oculto y vacío la previsualización
+      const previewContainer = document.getElementById('previewContainer');
+      previewContainer.style.display = 'none';
+      previewContainer.innerHTML = '<p>Previsualización:</p>';
+
+      // - Oculto el contenedor de etiquetas y reseteo todos los selects/inputs
+      const etiquetasContainer = document.getElementById('etiquetasContainer');
+      etiquetasContainer.style.display = 'none';
+
+      // DNI
+      document.getElementById('dniUpload').value = '';
+
+      // Región
+      const regionSelect = document.getElementById('regionUpload');
+      regionSelect.value = ''; // vuelve al placeholder
+
+      // Todos los selects de diagnóstico
+      document.querySelectorAll('.subregion-upload').forEach(sel => {
+        sel.style.display = 'none';
+        sel.selectedIndex = 0; // al placeholder
+      });
+
+      // Fase (pre/intra/post)
+      const faseSel = document.getElementById('faseUpload');
+      faseSel.style.display = 'none';
+      faseSel.selectedIndex = 0;
+
+      // Botón Guardar con etiquetas
+      document.getElementById('btnProcesar').style.display = 'none';
+
+      // Feedback
+      document.getElementById('feedback').textContent = '';
+
+      // Inputs type=file
+      const uploadInput = document.getElementById('uploadInput');
+      uploadInput.value = ''; // elimina la selección de archivos
+    }
+
+    // 3) Ahora sí quito la pantalla del historial y la oculto, mostrando la anterior
     historyScreens.pop();
     showScreen(historyScreens[historyScreens.length - 1]);
   }
 }
+
 //fin navegacion
 function entrarAplicacion() {
   navigateTo('formulario');
@@ -296,100 +341,148 @@ function repetirVideo() {
   document.getElementById('finalizar').style.display    = 'inline-block';  
 }
 //-------------sector clasificar-----------
-document.getElementById('btnClasificar')
-.addEventListener('click', () => {
-  navigateTo('pantallaUpload');
-});
-function mostrarSubregionUpload() {
-  // 1) Oculto todos los selects de diagnóstico
-  document.querySelectorAll('.subregion-upload')
-    .forEach(sel => sel.style.display = 'none');
+const btnClasificar = document.getElementById('btnClasificar');
 
-  // 2) Leo el valor elegido en el select con id="regionUpload"
-  const region = document.getElementById('regionUpload').value;
-
-  // 3) Muestro el select asociado, cuyo id es "subregionUpload-" + ese valor
-  const sub = document.getElementById('subregionUpload-' + region);
-  if (sub) sub.style.display = 'block';
+if (btnClasificar) {
+  btnClasificar.addEventListener('click', () => {
+    
+    navigateTo('pantallaUpload');
+  });
+} else {
+  console.error('No se encontró ningún elemento con id="btnClasificar"');
 }
+
 function iniciarImportacion() {
-  // Tomo los valores del formulario
-  const dni = document.getElementById('dniUpload').value.trim();
-  const regionSel = document.getElementById('regionUpload').value;
-  const sub = Array.from(document.querySelectorAll('.subregion-upload'))
-    .find(s => s.style.display === 'block');
-  const diag = sub ? sub.value : "";
-
-  // Validación: región y diagnóstico obligatorios; DNI opcional
-  if (!regionSel || !diag) {
-    alert("Por favor, completá región anatómica y diagnóstico");
-    return;
-  }
-
-  // Si pasó la validación, abro el selector de archivos
+  
   document.getElementById('uploadInput').click();
+  
+  if (input) {
+    input.click();
+  } else {
+    console.error('No existe ningún elemento con id="uploadInput"');
+  }
 }
-// Llamar a esta función cuando cambie el <input type="file">
+// Listener para cuando el usuario seleccione archivos en el input oculto
 document.getElementById('uploadInput')
   .addEventListener('change', function() {
-    const archivos = this.files;
-    const feedbackDiv = document.getElementById('feedback');
+    const archivos = Array.from(this.files);
+    const previewContainer = document.getElementById('previewContainer');
+   const etiquetasContainer = document.getElementById('etiquetasContainer');
+   const btnProcesar = document.getElementById('btnProcesar');
 
-    if (archivos.length === 0) {
-      feedbackDiv.textContent = '';
-      return;
-    }
-
-    if (archivos.length === 1) {
-      feedbackDiv.innerHTML = `1 archivo seleccionado: <span>${archivos[0].name}</span>`;
-    } else {
-      // Listar nombres de todos o simplemente mostrar la cantidad
-      const listaNombres = Array.from(archivos)
-        .map(file => file.name)
-        .join(', ');
-      feedbackDiv.innerHTML = `${archivos.length} archivos seleccionados: <span>${listaNombres}</span>`;
-    }
-  });
-  //definicion funcion procesar
-  function procesarYGuardarArchivos(files) {
-    console.log ('guardando')
-   
-    // Tomo valores del formulario para asignarlos a globals
-    const dniInput     = document.getElementById('dniUpload').value.trim();
-    const regionInput  = document.getElementById('regionUpload').value;
-    const subVisible   = Array.from(document.querySelectorAll('.subregion-upload'))
-                              .find(s => s.style.display === 'block');
-    const diagInput    = subVisible ? subVisible.value : '';
-  
-    Array.from(files).forEach(file => {
+    // Si no hay archivos, ocultamos todo y salimos
+  if (archivos.length === 0) {
+    previewContainer.style.display = 'none';
+    etiquetasContainer.style.display = 'none';
+    btnProcesar.style.display = 'none';
+    return;
+  }
+  previewContainer.innerHTML = '<p>Previsualización:</p>';
+    // 2) Tomamos solo el primer archivo para previsualizarlo
+    archivos.forEach(file => {
       const reader = new FileReader();
-  
       reader.onload = function(e) {
-        // 1) Asigno globals como los necesita guardarFoto()
-        dataURL       = e.target.result;  
-        dni           = dniInput;         
-        region        = regionInput;      
-        diagnostico   = diagInput;        
-  
-       
-        guardarFoto();
+        const url = e.target.result;
+        
+        // Creamos un elemento <img> para esta miniatura
+        const mini = document.createElement('img');
+        mini.src = url;
+        mini.style.maxWidth = '100px';
+        mini.style.maxHeight = '100px';
+        mini.style.marginRight = '0.5rem';
+        mini.style.marginBottom = '0.5rem';
+        mini.style.border = '1px solid #ccc';
+        // Lo añadimos al contenedor
+        previewContainer.appendChild(mini);
       };
-  
-      // 3) Leo el archivo como DataURL
       reader.readAsDataURL(file);
     });
-  }
   
-  //click en boton procesar
-  document.getElementById('btnProcesar')
-  .addEventListener('click', () => {
-    const archivos = document.getElementById('uploadInput').files;
-    if (!archivos || archivos.length === 0) {
-      alert('Primero debés seleccionar una o varias imágenes.');
+    // Mostramos el contenedor de previsualizaciones
+    previewContainer.style.display = 'flex';
+    previewContainer.style.flexWrap = 'wrap';
+  
+    // Mostramos el formulario de etiquetas y el botón Guardar
+    etiquetasContainer.style.display = 'flex';
+    btnProcesar.style.display = 'inline-block';
+  });
+  function mostrarSubregionUpload() {
+    // Oculto todos los selects de diagnóstico
+    document.querySelectorAll('.subregion-upload').forEach(sel => {
+      sel.style.display = 'none';
+      sel.selectedIndex = 0;
+    });
+    const faseSel = document.getElementById('faseUpload');
+    faseSel.style.display = 'none';
+    faseSel.selectedIndex = 0;
+    // Leo la región elegida
+    const region = document.getElementById('regionUpload').value;
+    // Muestro el select cuyo id coincide con "subregionUpload-"+region
+    const sub = document.getElementById('subregionUpload-' + region);
+    if (sub) {
+      sub.style.display = 'block';
+      sub.selectedIndex = 0;
+      // Cada vez que el usuario elija un diagnóstico, muestro el select de fase
+      sub.addEventListener('change', () => {
+        faseSel.style.display = 'block';
+        faseSel.selectedIndex = 0;
+      });
+    }
+  }
+  document.getElementById('btnProcesar').addEventListener('click', () => {
+    // 1) Tomo DNI (opcional), región y diagnóstico
+    const dniInput = document.getElementById('dniUpload').value.trim();
+    const regionInput = document.getElementById('regionUpload').value;
+    const subVisible = Array.from(document.querySelectorAll('.subregion-upload'))
+                           .find(s => s.style.display === 'block');
+   const diagInput = subVisible ? subVisible.value : '';
+             
+   const faseInput = document.getElementById('faseUpload').value;
+
+   if (!regionInput || !diagInput || !faseInput) {
+    alert('Por favor, completá región anatómica,diagnóstico y fase');
+        return;
+      }
+  
+    const diagConFase = `${diagInput}-${faseInput}`;
+    // 3) Asigno a variables globales para que guardarFoto() use estos datos
+    dni = dniInput;
+    region = regionInput;
+    diagnostico = diagConFase;;
+    
+     
+    const archivos = Array.from(document.getElementById('uploadInput').files);
+    if (archivos.length === 0) {
+      alert('Primero debés importar una foto.');
       return;
     }
-    procesarYGuardarArchivos(archivos);
-  });
+    archivos.forEach((file, idx) => {
+      setTimeout(() => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          dataURL = e.target.result;
+          guardarFoto();
+        };
+        reader.readAsDataURL(file);
+      }, idx * 300); // 300 ms de separación entre cada archivo
+    });
+    
+
+    const feedbackDiv = document.getElementById('feedback');
+    feedbackDiv.textContent = 'Guardando todas las imágenes con etiquetas…';
+    setTimeout(() => {
+      document.getElementById('previewContainer').style.display = 'none';
+      document.getElementById('etiquetasContainer').style.display = 'none';
+      document.getElementById('btnProcesar').style.display = 'none';
+      document.getElementById('faseUpload').style.display = 'none';
+      feedbackDiv.textContent = '';
+      document.getElementById('uploadInput').value = '';
+      document.getElementById('dniUpload').value = '';
+      document.getElementById('regionUpload').value = '';
+      document.querySelectorAll('.subregion-upload').forEach(sel => sel.style.display = 'none');
+    }, 2000);
+  }); 
+
 
 //mostrar despedida
 function mostrarDespedida() {

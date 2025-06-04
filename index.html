@@ -201,8 +201,27 @@
  <!-- Pantalla de clasificar -->
  <div id="pantallaUpload"style="display:none; flex-direction:column; align-items:center;">
   <h2>Clasificador de fotos</h2>
-  <h3>complete el formulario con las etiquetas para las fotos que quiere ordenar</h3>
- 
+  <h3>Primero importá una foto para previsualizarla</h3>
+
+  <!-- 1) Botón IMPORTAR FOTO visible desde el inicio -->
+  <button id="btnImportar" class="btn-importar"onclick="iniciarImportacion()">
+    Importar fotos
+  </button>
+
+  <input
+    type="file"
+    id="uploadInput"
+    accept="image/*"
+    multiple
+    style="display: none;"
+  />
+   <!-- 3) Contenedor para la preview (imagen pequeña) -->
+   <div id="previewContainer" style="margin-top: 1rem; display: none;">
+    <p>Previsualización:</p>
+    <img id="previewImg" src="" alt="Vista previa" style="max-width: 200px; max-height: 200px; border: 1px solid #ccc;" />
+  </div>
+ <!--formulario-->
+ <div id="etiquetasContainer" style="margin-top: 1rem; display: none; flex-direction: column; align-items: center;"></div>
   <input type="text" id="dniUpload" placeholder="DNI (opcional)" />
   <select id="regionUpload" onchange="mostrarSubregionUpload()" required>
     <option value="" disabled selected>Seleccioná región anatómica</option>
@@ -279,23 +298,27 @@
     <option value="muñeca">Muñeca</option>
     <option value="det-otro">DET-otro</option>
   </select>
-
-  <button id="btnImportar" class="btn-importar"onclick="iniciarImportacion()">
-    Importar fotos
+  <select id="faseUpload" style="display: none; margin-bottom: 0.5rem;">
+    <option value="" disabled selected>Seleccioná fase</option>
+    <option value="pre">Pre</option>
+    <option value="intra">Intra</option>
+    <option value="post">Post</option>
+  </select>
+  <button id="btnProcesar" class="btn-procesar" style="display: none; margin-top: 1rem;">
+    Guardar con etiquetas
   </button>
-
-  <input
-    type="file"
-    id="uploadInput"
-    accept="image/*"
-    multiple
-    style="display: none;"
-  />
+  <button class="botonControl" id="despedida"     onclick="mostrarDespedida() " style="display: inline-block;" >
+    Finalizar
+  </button> 
+ </div>
   <!-- Contenedor para mostrar al usuario cuántos archivos seleccionó -->
-  <div id="feedback" class="feedback"></div>
-  <button id="btnProcesar" class="btn-procesar" >
-    Procesar y guardar
-  </button>
+  <div id="feedback" class="feedback">
+    <button class="botonControl" id="despedida"     onclick="mostrarDespedida() " style="display: block;" >
+      Finalizar
+    </button> 
+  </div>
+  
+  
 </div>
 
  </div>
